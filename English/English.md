@@ -19,7 +19,8 @@
 | 单词 | 音标 | 翻译 |
 | :-: | :-: | :-:|
 | deduce | [dɪˈdjuːs] | 推断 |
-| schedule | /ˈʃedjuːl/ | 日程表 |
+| schedule | /ˈʃedjuːl/ <br> /ˈskedʒuːl/ | 日程表 |
+| route | /ruːt/ | 路线 |
 
   : Caption {#tbl:翻译}
 
