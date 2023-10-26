@@ -57,7 +57,11 @@ reference-section-title: "参考文献"
 
 # 卡尔曼滤波
 
-&emsp;&emsp;卡尔曼滤波参考教程：[【从放弃到精通！卡尔曼滤波从理论到实践~】](https://www.bilibili.com/video/BV1Rh41117MT/?p=3&share_source=copy_web&vd_source=6b55cb6788b1952e04c06b095d772810)。从该教程中提取公式并理解。
+## 参考教程
+
+1. [【从放弃到精通！卡尔曼滤波从理论到实践~】](https://www.bilibili.com/video/BV1Rh41117MT/?p=3&share_source=copy_web&vd_source=6b55cb6788b1952e04c06b095d772810)：从该教程中提取公式并理解。这个讲得很好，但是公式不够严谨，还有小错误，而且完全跳过了重要的更新过程。
+2. [【【不要再看那些过时的卡尔曼滤波老教程了】2022巨献，卡尔曼滤波-目标追踪从理论到实战最新版全套教程！建议收藏】 ](https://www.bilibili.com/video/BV1iv4y1N7As/?share_source=copy_web&vd_source=6b55cb6788b1952e04c06b095d772810)：只看了p1而且讲得很不好，但是帮助理解更细那块有点点小用吧。
+3. [一文看懂卡尔曼滤波（附全网最详细公式推导） - 付聪的文章 - 知乎](https://zhuanlan.zhihu.com/p/433560568)：公式推导挺全面的，但是流畅度还是不如我自己的这篇。
 
 ## 文件说明
 
