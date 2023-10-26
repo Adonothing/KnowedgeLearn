@@ -51,14 +51,14 @@ $z_{t}$是观测量，$x_{t}$是状态量，$H$是状态量的系数，又称`�
 $$
 \begin{equation}
 \begin{aligned}
-    {{w_{t} \in N(0,Q_{t})}} \\ 
-    {{v_{t} \in N(0,R_{t})}}
+    {{w_{t} \in N(0,Q)}} \\ 
+    {{v_{t} \in N(0,R)}}
 \end{aligned}
 \end{equation}
 $${#eq:噪音服从正态分布}
 :::
 
-他们的均值均为零，方差分别为$Q_{t}$和$R_{t}$。$w_{t}$和$v_{t}$就是其中的一个取值，只是取得这个结果的概率服从正态分布。
+他们的均值均为零，方差分别为$Q$和$R$，方差为常数，与时间无关。$w_{t}$和$v_{t}$就是其中的一个取值，只是取得这个结果的概率服从正态分布。
 
 ### 超参数
 
@@ -107,7 +107,7 @@ $$
 $${#eq:带噪音的匀加速直线运动1}
 :::
 
-其中$i$表示当前时刻，$i-1$表示上一时刻。$p_r$是位置噪音，$v_r$是速度噪音，均服从正太分布。去掉噪音就是高中物理学习的标准的位置和速度公式。写成矩阵形式：
+其中$i$表示当前时刻，$i-1$表示上一时刻。$p_r$是位置噪音，$v_r$是速度噪音，均服从正太分布，噪音是随机的，与时间有关，每个时刻产生随机的噪音。去掉噪音就是高中物理学习的标准的位置和速度公式。写成矩阵形式：
 
 ::: {custom-style="Figure"}
 $$
@@ -185,7 +185,7 @@ $$
 $${#eq:先验误差和后验误差的关系}
 :::
 
-&emsp;&emsp;接下来求先验估计的协方差：
+&emsp;&emsp;接下来求先验误差的协方差矩阵：
 
 ::: {custom-style="Figure"}
 $$
@@ -196,20 +196,20 @@ $$
     &= F \cdot Cov(e_{t-1}) \cdot F^{T} + Cov(w_{t}) \\
 \end{aligned}
 \end{equation}
-$${#eq:先验估计的协方差1}
+$${#eq:先验误差的协方差矩阵1}
 :::
 
-记`先验估计的协方差`$Cov(x_t) = P_{t}^{-}$，则上[#eq:先验估计的协方差1]可以写作：
+记`先验误差的协方差矩阵`$Cov({e}_{t}^{-}) = P_{t}^{-}$，则上[#eq:先验误差的协方差矩阵1]可以写作：
 
 ::: {custom-style="Figure"}
 $$
 \begin{equation}
-    P_{t}^{-} = F \cdot P_{t-1} \cdot F^{T}+Q
+    P_{t}^{-} = F \cdot P_{t-1} \cdot F^{T} + Q
 \end{equation}
-$${#eq:先验估计的协方差2}
+$${#eq:先验误差的协方差矩阵2}
 :::
 
-其中$P_{t-1}$是上一时刻的后验估计的协方差。
+其中$P_{t-1}$是上一时刻的后验误差的协方差矩阵。不同状态之间的噪音很可能不是独立的，他们具有一定的相关性。
 
 ### 更新模型
 
@@ -262,7 +262,7 @@ $${#eq:位置和速度观测方程的矩阵形式}
 ::: {custom-style="Figure"}
 $$
 \begin{equation}
-    残差 = z_t-H \cdot \hat{x}_t^-
+    残差 = z_t - H \cdot \hat{x}_t^-
 \end{equation}
 $${#eq:残差}
 :::
@@ -272,7 +272,7 @@ $${#eq:残差}
 ::: {custom-style="Figure"}
 $$
 \begin{equation}
-    \hat{x}_t - \hat{x}_t^- = K_t \cdot (z_t-H \cdot \hat{x}_t^-)
+    \hat{x}_t - \hat{x}_t^- = K_t \cdot (z_t - H \cdot \hat{x}_t^-)
 \end{equation}
 $${#eq:最优估计偏差和残差的关系}
 :::
@@ -289,5 +289,182 @@ $${#eq:最优估计值计算公式}
 
 这样，最优估计值$\hat{x}_t$等于当前时刻的预测值$\hat{x}_t^-$，加上权重$K_t$乘以观测误差$z_t-H \cdot \hat{x}_t^-$。
 
+#### 更新卡尔曼增益
+
 &emsp;&emsp;那么这个权重$K_t$给多少呢？怎么给呢？是随便给吗？有什么依据吗？
 
+&emsp;&emsp;答：当然是有依据的。依据当然是真实值和最优估计值之间的差值${e}_t$最小，即后验误差最小，后验误差见上[@eq:后验误差]。将上[@eq:最优估计值计算公式]最优估计值带入上[@eq:后验误差]中：
+
+::: {custom-style="Figure"}
+$$
+\begin{equation}
+\begin{aligned}
+    {e}_t = x_{t} - [\hat{x}_t^- + K_t \cdot (z_t - H \cdot \hat{x}_t^-)]
+\end{aligned}
+\end{equation}
+$${#eq:后验误差变换1}
+:::
+
+继续化简，将观测方程[@eq:观测方程]带入上[@eq:后验误差变换1]中：
+
+$$
+\begin{equation}
+\begin{aligned}
+    {e}_t &= x_{t} - [\hat{x}_t^- + K_t \cdot (H \cdot x_{t} + v_{t} - H \cdot \hat{x}_t^-)] \\
+    &= (x_{t} - \hat{x}_t^-) - K_t \cdot H \cdot (x_{t} - \hat{x}_t^-) - K_t \cdot v_{t}
+\end{aligned}
+\end{equation}
+$${#eq:后验误差变换2}
+:::
+
+继续化简，将上[@eq:先验误差]的先验误差${e}_{t}^{-}$带入上[@eq:后验误差变换2]中：
+
+$$
+\begin{equation}
+\begin{aligned}
+    {e}_t &= (x_{t} - \hat{x}_t^-) - K_t \cdot H \cdot (x_{t} - \hat{x}_t^-) - K_t \cdot v_{t} \\
+    &= {e}_{t}^{-} - K_t \cdot H \cdot {e}_{t}^{-} - K_t \cdot v_{t} \\
+    &= (I - K_t \cdot H) \cdot {e}_{t}^{-} - K_t \cdot v_{t}
+\end{aligned}
+\end{equation}
+$${#eq:后验误差变换3}
+:::
+
+&emsp;&emsp;接下来求后验误差的协方差矩阵：
+
+::: {custom-style="Figure"}
+$$
+\begin{equation}
+\begin{aligned}
+    Cov({e}_{t},{e}_{t}) &= Cov({e}_{t}) \\
+    &= Cov[(I - K_t \cdot H) \cdot {e}_{t}^{-} - K_t \cdot v_{t}] \\
+    &= (I - K_t \cdot H) \cdot Cov({e}_{t}^{-}) \cdot (I - K_t \cdot H)^T +  K_t \cdot Cov(v_{t}) \cdot K_t^T
+\end{aligned}
+\end{equation}
+$${#eq:后验误差的协方差矩阵1}
+:::
+
+记`后验误差的协方差矩阵`$Cov({e}_{t}) = P_{t}$，则上[#eq:后验误差的协方差矩阵1]可以写作：
+
+::: {custom-style="Figure"}
+$$
+\begin{equation}
+\begin{aligned}
+    P_{t} &= (I - K_t \cdot H) 
+        \cdot P_{t}^{-} 
+        \cdot (I - K_t \cdot H)^T 
+        +  K_t \cdot R \cdot K_t^T \\
+    &= (P_{t}^{-} - K_t \cdot H \cdot P_{t}^{-}) 
+        \cdot (I - H^T \cdot K_t^T) 
+        + K_t \cdot R \cdot K_t^T \\
+    &= P_{t}^{-} 
+        - K_t \cdot H \cdot P_{t}^{-}
+        - P_{t}^{-} \cdot H^T \cdot K_t^T \\
+        &+ K_t \cdot H \cdot P_{t}^{-} \cdot H^T \cdot K_t^T
+        + K_t \cdot R \cdot K_t^T \\
+    &= P_{t}^{-} 
+        - K_t \cdot H \cdot P_{t}^{-}
+        - (K_t \cdot H \cdot P_{t}^{-})^T
+        + K_t \cdot (H \cdot P_{t}^{-} \cdot H^T + R) \cdot K_t^T
+\end{aligned}
+\end{equation}
+$${#eq:后验误差的协方差矩阵2}
+:::
+
+我们想要后验误差的协方差矩阵$P_{t}$最小，只要让该矩阵对角线上的和最小就行了，即矩阵$P_{t}$的迹最小。为什么呢？因为对角线上是每个误差本身的协方差，也就是方差，他们的和最小，协方差矩阵$P_{t}$就最小；矩阵的其他位置是两两误差的相关性，与整体误差无关，对整体误差大小没有影响。因此：
+
+::: {custom-style="Figure"}
+$$
+\begin{equation}
+\begin{aligned}
+    T(P_{t}) = T(P_{t}^{-}) 
+        - 2 \cdot T(K_t \cdot H \cdot P_{t}^{-})
+        + T[K_t \cdot (H \cdot P_{t}^{-} \cdot H^T + R) \cdot K_t^T]
+\end{aligned}
+\end{equation}
+$${#eq:后验误差的协方差矩阵的迹}
+:::
+
+其中$T()$代表矩阵的迹。把上[@eq:后验误差的协方差矩阵的迹]看作是关于$K_t$的函数：
+
+::: {custom-style="Figure"}
+$$
+\begin{equation}
+\begin{aligned}
+    f(x) = a \cdot x^2 - 2 \cdot b \cdot x + c,
+    \quad(a,b\text{是正的常数})
+\end{aligned}
+\end{equation}
+$${#eq:关于卡尔曼滤波系数的函数}
+:::
+
+显然，这个函数是一个开口向上的一元二次函数，有极小值。它是一个凸函数，导数为0的点就是最小值。上[@eq:后验误差的协方差矩阵的迹]求导为：
+
+::: {custom-style="Figure"}
+$$
+\begin{equation}
+\begin{aligned}
+    {\frac {dT(P_{t})} {dK_{t}}}
+    &= -2 \cdot (H \cdot P_{t}^{-})^{T} 
+        + K_{t} \cdot (H \cdot P_{t}^{-} \cdot H^{T} + R)
+        + K_{t} \cdot (H \cdot P_{t}^{-} \cdot H^{T} + R) \\
+    &= -2 \cdot (H \cdot P_{t}^{-})^{T} 
+        + 2 \cdot K_{t} \cdot (H \cdot P_{t}^{-} \cdot H^{T} + R)
+\end{aligned}
+\end{equation}
+$${#eq:后验误差的协方差矩阵的迹的转置}
+:::
+
+这里是对矩阵的迹的求导，求导公式从函数求导理解，想弄清楚，那么具体矩阵迹的求导需要单独学习。使得上式为零，则可计算出卡尔曼滤波系数$K_{t}$：
+
+::: {custom-style="Figure"}
+$$
+\begin{equation}
+    K_t = \frac {P_t^- \cdot H^T} {H \cdot P_t^- \cdot H^T + R}
+\end{equation}
+$${#eq:卡尔曼滤波系数}
+:::
+
+#### 更新后验误差的协方差
+
+&emsp;&emsp;将计算得到的卡尔曼滤波系数$K_t$带入上[@eq:后验误差的协方差矩阵2]，计算得到后验误差协方差矩阵：
+
+::: {custom-style="Figure"}
+$$
+\begin{equation}
+\begin{aligned}
+    P_{t} &= P_{t}^{-} - K_t \cdot H \cdot P_{t}^{-} \\
+        &= (I - K_t \cdot H) \cdot P_{t}^{-} \\
+\end{aligned}
+\end{equation}
+$${#eq:后验误差的协方差矩阵3}
+:::
+
+至此，卡尔曼滤波的五个重要的公式已经全部推导完成。分别是：[@eq:先验估计]、[@eq:先验误差的协方差矩阵2]、[@eq:卡尔曼滤波系数]、[@eq:最优估计值计算公式]、[@eq:后验误差的协方差矩阵3]。综上，我们把这五个重要的公式写在一起：
+
+预测公式：
+
+::: {custom-style="Figure"}
+$$
+\begin{equation}
+\begin{aligned}
+    \hat{x}_{t}^{-} &= F \cdot \hat{x}_{t-1} + B \cdot u_{t-1} \\
+    P_{t}^{-} &= F \cdot P_{t-1} \cdot F^{T} + Q 
+\end{aligned}
+\end{equation}
+$${#eq:预测}
+:::
+
+更新公式：
+
+::: {custom-style="Figure"}
+$$
+\begin{equation}
+\begin{aligned}
+    K_t &= \frac {P_t^- \cdot H^T} {H \cdot P_t^- \cdot H^T + R} \\
+    \hat{x}_t &= \hat{x}_t^- + K_t \cdot (z_t-H \cdot \hat{x}_t^-) \\
+    P_{t} &= (I - K_t \cdot H) \cdot P_{t}^{-}
+\end{aligned}
+\end{equation}
+$${#eq:更新}
+:::
