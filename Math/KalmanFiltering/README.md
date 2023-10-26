@@ -1,3 +1,60 @@
+---
+#文章封面
+title: "This is the title: it contains a colon"
+titleDelim: s
+abstract: |
+  This is the abstract.
+
+  It consists of two paragraphs.
+author:
+- Author One
+- Author Two
+keywords:
+- nothing
+- nothingness
+
+#添加章编号
+chapters: true
+linkReferences: true
+nameInLink: true
+
+#图编号
+figureTitle: 图  #图标题名称
+figPrefix: 图  #交叉引用名称
+#titleDelim: s  #默认为冒号：:
+figureTemplate: $$figureTitle$$$$i$$ $$t$$  #去除titleDelim
+#figLabels: arabic #默认为阿拉伯数字
+figPrefixTemplate: $$p$$$$i$$ #去除引用名字,default $$p$$&nbsp;$$i$$
+
+#表编号
+tableTitle: 表
+tblPrefix: 表
+tableTemplate: $$tableTitle$$$$i$$ $$t$$
+tblPrefixTemplate: $$p$$$$i$$ #去除引用名字
+
+#方程编号
+autoEqnLabels: true #公式自动编号
+tableEqns: true #使用表格形式对公式进行排版，转word效果更好
+eqnBlockTemplate: |
+   `<w:pPr><w:tabs><w:tab w:val="center" w:leader="none" w:pos="4325" /><w:tab w:val="right" w:leader="none" w:pos="8681" /></w:tabs></w:pPr><w:r><w:tab /></w:r>`{=openxml} $$t$$ `<w:r><w:tab /></w:r>`{=openxml} $$i$$
+#1英寸相当于2.54厘米 1440 twips = one inch A4纸宽度21cm 信纸21.59
+#居中pos的计算方式：(页面宽度/2-左边距)*1440/2.54 
+#右边pos的计算方式：页面宽度-左边距-右边距
+eqnBlockInlineMath: true
+equationNumberTeX: \\tag
+eqnIndexTemplate: ($$i$$) #这个是给编号加上括号
+eqnPrefixTemplate: 式&nbsp;($$i$$) #给引用的公式编号加上括号
+#我的word里是A4的，页边距为3.17cm，但是计算得到的数据是偏的
+#所以结合手都调整，有两种参数：
+#word自带公式的：4322     8637
+#mathtype公式的：4325     8681
+
+#参考文献
+bibliography: [我的文库.bib]
+link-citations: true
+reference-section-title: "参考文献"
+---
+
 # 卡尔曼滤波
 
 &emsp;&emsp;卡尔曼滤波参考教程：[【从放弃到精通！卡尔曼滤波从理论到实践~】](https://www.bilibili.com/video/BV1Rh41117MT/?p=3&share_source=copy_web&vd_source=6b55cb6788b1952e04c06b095d772810)。从该教程中提取公式并理解。
@@ -77,20 +134,6 @@ $${#eq:卡尔曼滤波和PID调参}
 &emsp;&emsp;通过卡尔曼滤波也不会得到真实值，而是每个时刻状态的`最优估计值`$\widehat{x}_{t}$，是修正值，也叫`后验估计值`。总结来说是，上一时刻的`最优估计值`$\widehat{x}_{t-1}$，根据物理理论再加上过程噪声（状态方程）得到的`先验估计值`$\hat{x}_k^{-}$，然后利用有噪音的观测值（观测方程）$z_{t}$，进行加权得到最优估计值$\widehat{x}_{t}$。这样从先验到后验，也就实现了`预测到更新`，而最优估计值的不断变化，也就是`迭代`。因为观测值也是有噪声的，通过得到最优估计值，也就是实现了`滤波`，去除了部分噪音。
 
 ## P4 放弃（通俗公式理解）
-
-### 方程暂存
-
-$$
-\begin{aligned}\hat{x}_{t}^{-} & =F\hat{x}_{t-1}+Bu_{t-1}\\  & \\ P_{t}^{-} & =FP_{t-1}F^{T}+Q\end{aligned}
-$$
-
-$$
-\begin{aligned}K_t&=P_t^-H^T\left(HP_t^-H^T+R\right)^{-1}\\\\\hat x_t&=\hat x_t^-+K_t(z_t-H\hat x_t^-)\\\\P_t&=(I-K_tH)P_t^-\end{aligned}
-$$
-
-$$
-\begin{aligned}&p_t=p_{t-1}+v_{t-1}\cdot\Delta t+\frac a2\Delta t^2\\&v_t=v_{t-1}+a\cdot\Delta t\end{aligned}
-$$
 
 ### 预测模型
 
@@ -307,6 +350,7 @@ $${#eq:后验误差变换1}
 
 继续化简，将观测方程[@eq:观测方程]带入上[@eq:后验误差变换1]中：
 
+::: {custom-style="Figure"}
 $$
 \begin{equation}
 \begin{aligned}
@@ -319,6 +363,7 @@ $${#eq:后验误差变换2}
 
 继续化简，将上[@eq:先验误差]的先验误差${e}_{t}^{-}$带入上[@eq:后验误差变换2]中：
 
+::: {custom-style="Figure"}
 $$
 \begin{equation}
 \begin{aligned}
@@ -371,7 +416,7 @@ $$
 $${#eq:后验误差的协方差矩阵2}
 :::
 
-我们想要后验误差的协方差矩阵$P_{t}$最小，只要让该矩阵对角线上的和最小就行了，即矩阵$P_{t}$的迹最小。为什么呢？因为对角线上是每个误差本身的协方差，也就是方差，他们的和最小，协方差矩阵$P_{t}$就最小；矩阵的其他位置是两两误差的相关性，与整体误差无关，对整体误差大小没有影响。因此：
+其中之所以能化简，是由于误差的协方差矩阵$P_{t}$和$P_{t}^-$均是自相关矩阵，即以对角线为分界线，矩阵是对称的，这是协方差矩阵的性质。我们想要后验误差的协方差矩阵$P_{t}$最小，只要让该矩阵对角线上的和最小就行了，即矩阵$P_{t}$的迹最小。为什么呢？因为对角线上是每个误差本身的协方差，也就是方差，他们的和最小，协方差矩阵$P_{t}$就最小；矩阵的其他位置是两两误差的相关性，与整体误差无关，对整体误差大小没有影响。因此：
 
 ::: {custom-style="Figure"}
 $$
