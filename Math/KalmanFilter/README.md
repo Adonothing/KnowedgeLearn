@@ -489,7 +489,9 @@ $$
 $${#eq:后验误差的协方差矩阵3}
 :::
 
-至此，卡尔曼滤波的五个重要的公式已经全部推导完成。分别是：[@eq:先验估计]、[@eq:先验误差的协方差矩阵2]、[@eq:卡尔曼滤波系数]、[@eq:最优估计值计算公式]、[@eq:后验误差的协方差矩阵3]。综上，我们把这五个重要的公式写在一起：
+## 总结
+
+&emsp;&emsp;至此，卡尔曼滤波的五个重要的公式已经全部推导完成。分别是：[@eq:先验估计]、[@eq:先验误差的协方差矩阵2]、[@eq:卡尔曼滤波系数]、[@eq:最优估计值计算公式]、[@eq:后验误差的协方差矩阵3]。综上，我们把这五个重要的公式写在一起：
 
 预测公式：
 
@@ -517,3 +519,91 @@ $$
 \end{equation}
 $${#eq:更新}
 :::
+
+### matlab仿真
+
+
+
+### GNSS定位领域
+
+### 变换
+
+&emsp;&emsp;以上推导的公式形式常用于自动控制领域。在卫星导航领域，状态空间表达式如下：
+
+$$
+\begin{equation}
+\left\{
+\begin{aligned}
+    X_k &= \Phi_k \cdot X_{k-1} + \psi_{k,k-1} \cdot U_{k-1} + \Gamma_{k,k-1} \cdot \Omega_{k-1} \\
+    L_k &= B_k \cdot X_k + G_k \cdot U_k + \Delta_k
+\end{aligned}
+\right.
+\end{equation}
+$${#eq:状态空间表达式}
+
+上式和状态方程[@eq:状态方程]的以及观测方程[@eq:观测方程]还有三个区别：
+
+一个是下角标$_{k,k-1}$出现在一些系数矩阵上，这是为什么呢？是因为系数矩阵所乘以的矩阵变量是上一时刻的，从上一时刻到这一个时刻的矩阵变换关系表示为${k,k-1}$。第二个变化是观测方程的单噪音项变成了两项相乘，其中$\Omega_{k-1}$为上一时刻的动态噪声，$\Gamma_{k,k-1}$为噪音变化矩阵。第三个变化是在观测方程中，该时刻的控制项$G_k \cdot U_k$，该控制项将影响观测值，在部分传感器中会出现这种观测方程，这种传感器我目前还没见过。
+
+&emsp;&emsp;同理，可以得到卡尔曼滤波公式：
+
+时间更新：
+
+::: {custom-style="Figure"}
+$$
+\begin{equation}
+\left\{
+\begin{aligned}
+    \widehat{X}_{k,k-1} &= \Phi_{k,k-1} \cdot \widehat{X}_{k-1,k-1} + \psi_{k,k-1} \cdot U_{k-1} \\
+    D_{X_{k,k-1}} &= \Phi_{k,k-1} \cdot D_{X_{k-1,k-1}} \cdot \Phi_{k,k-1}^{T} 
+        + \Gamma_{k,k-1} \cdot D_{\Omega_{k-1}} \cdot \Gamma_{k,k-1}^{T}
+\end{aligned}
+\right.
+\end{equation}
+$${#eq:时间更新}
+:::
+
+上式与上[@eq:预测]预测方程除了符号以外完全相同，但是确实不够优雅，可读性也不如[@eq:预测]，比如先验误差符号有点怪怪的。之前叫预测，但是这里叫一步预测公式的时间更新，因为从公式上来说，是从上一个时刻推导到这时刻。但是预测的叫法和时间更新的叫法值得是一个东西。
+
+测量更新：
+
+::: {custom-style="Figure"}
+$$
+\begin{equation}
+\begin{aligned}
+    \widehat{X}_{k,k} &= \widehat{X}_{k,k-1} + J_k \cdot l_k \\ 
+    D_{X_{k,k}} &= (I - J_k \cdot B_k) \cdot D_{X_{k,k-1}}
+\end{aligned}
+\end{equation}
+$${#eq:测量更新1}
+:::
+
+其中：
+
+::: {custom-style="Figure"}
+$$
+\begin{equation}
+\begin{aligned}
+    J_k &= D_{X_{k,k-1}} \cdot B_k^T\big(B_k \cdot D_{X_{k,k-1}} \cdot B_k^T + D_{\Delta_k}\big)^{-1} \\
+    l_k &= L_k - Z_k - B_k \cdot \widehat{X}_{k,k-1}
+\end{aligned}
+\end{equation}
+$${#eq:测量更新2}
+:::
+
+其中：
+
+::: {custom-style="Figure"}
+$$
+\begin{equation}
+    Z_{k} = G_{k} \cdot U_{k}
+\end{equation}
+$${#eq:飞随机控制向量}
+:::
+
+上式和[@eq:更新]更新方程除了符号以及状态方程那儿说的不同之处以外没有任何不同。这里$J_k$除了之前叫卡尔曼滤波系数，这里还叫滤波增益矩阵。$l_k$除了叫验前残差以外还叫`新息矩阵`、`OMC向量`。
+
+### 简化
+
+&emsp;&emsp;在GNSS定位数据处理中，通常不涉及控制向量。非随机控制项为零时，即方程和观测方程中$U_k = 0$，也即卡尔曼滤波公式中$U_k = 0$和$Z_k = 0$，去掉包含这两项的内容即可。
+
