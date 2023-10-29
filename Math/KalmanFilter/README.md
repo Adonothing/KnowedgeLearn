@@ -119,7 +119,30 @@ $$
 $${#eq:噪音服从正态分布}
 :::
 
-他们的均值均为零，方差分别为$Q$和$R$，方差为常数，与时间无关。$w_{t}$和$v_{t}$就是其中的一个取值，只是取得这个结果的概率服从正态分布。
+他们的均值均为零，方差分别为$Q$和$R$，方差为常数，与时间无关。$w_{t}$和$v_{t}$就是其中的一个取值，只是取得这个结果的概率服从正态分布：
+
+::: {custom-style="Figure"}
+$$
+\begin{equation}
+\begin{aligned}
+    f (w_t) 
+    = \frac {1} 
+        {\sqrt{2 \cdot \pi \cdot Q}}
+        \cdot e^{ 
+            - \frac {w_t^2}
+            {2 \cdot Q}
+        } \\
+    f (v_t) 
+    = \frac {1} 
+        {\sqrt{2 \cdot \pi \cdot R}}
+        \cdot e^{ 
+            - \frac {v_t^2}
+            {2 \cdot R}
+        }
+\end{aligned}
+\end{equation}
+$${#eq:噪音服从正态分布}
+:::
 
 ### 超参数
 
@@ -147,48 +170,72 @@ $${#eq:卡尔曼滤波和PID调参}
 $$
 \begin{equation}
 \begin{aligned}
-    &p_t = p_{t-1} + v_{t-1}\cdot\Delta t + \frac {a}2\cdot\Delta t^2 + r_t(p) \\
-    &v_t = v_{t-1} + a\cdot\Delta t + r_t(v)
+    &p_t = p_{t-1} + v_{t-1}\cdot\Delta t + \frac {a}2\cdot\Delta t^2 \\
+    &v_t = v_{t-1} + a\cdot\Delta t
 \end{aligned}
 \end{equation}
-$${#eq:带噪音的匀加速直线运动1}
+$${#eq:匀加速直线运动1}
 :::
 
-其中$i$表示当前时刻，$i-1$表示上一时刻。$p_r$是位置噪音，$v_r$是速度噪音，均服从正太分布，噪音是随机的，与时间有关，每个时刻产生随机的噪音。去掉噪音就是高中物理学习的标准的位置和速度公式。写成矩阵形式：
+其中 $t$ 表示当前时刻，$t - 1$ 表示上一时刻。这是高中物理学习的标准的位置和速度公式。写成矩阵形式：
 
 ::: {custom-style="Figure"}
 $$
 \begin{equation}
-\begin{bmatrix}
-    p_t \\
-    v_t
-\end{bmatrix}
-=\begin{bmatrix}
-    1 & \Delta t \\
-    0 & 1
-\end{bmatrix}
-\cdot\begin{bmatrix}
-    p_{t-1} \\
-    v_{t-1}
-\end{bmatrix}
-+\begin{bmatrix}
-    \frac{\Delta t^2}2 \\
-    \Delta t
-\end{bmatrix}\cdot a
-+\begin{bmatrix}
-    r_t(p) \\
-    r_t(v)
-\end{bmatrix}
+    \begin{bmatrix}
+        p_t \\
+        v_t
+    \end{bmatrix}
+    = \begin{bmatrix}
+        1 & \Delta t \\
+        0 & 1
+    \end{bmatrix}
+    \cdot\begin{bmatrix}
+        p_{t-1} \\
+        v_{t-1}
+    \end{bmatrix}
+    + \begin{bmatrix}
+        \frac{\Delta t^2}2 \\
+        \Delta t
+    \end{bmatrix} \cdot a
 \end{equation}
-$${#eq:带噪音的匀加速直线运动2}
+$${#eq:匀加速直线运动2}
 :::
-可以看到该[@eq:带噪音的匀加速直线运动2]，满足状态方程[@eq:状态方程]。
+
+写成矩阵的形式为：
+
+::: {custom-style="Figure"}
+$$
+\begin{equation}
+    \underline{x} = F \cdot \underline{x_{t-1}} + B \cdot u_{t-1}
+\end{equation}
+$${#eq:理想的状态方程}
+:::
+
+其中下划线 $\underline{x}$ 表示没用噪音的理论值。上式加上噪音后：
+
+::: {custom-style="Figure"}
+$$
+\begin{equation}
+    \begin{bmatrix}
+        1 & 0 \\
+        0 & 1
+    \end{bmatrix} \cdot
+    \begin{bmatrix}
+        r_t(p) \\
+        r_t(v)
+    \end{bmatrix}
+\end{equation}
+$${#eq:过程噪音}
+:::
+
+满足状态方程[@eq:状态方程]。其中，$r_t(p)$是位置噪音，$r_t(v)$是速度噪音，均服从正太分布，噪音是随机的，与时间有关，每个时刻产生随机的噪音。
 
 ### 预测方程
 
 #### 状态预测
 
-&emsp;&emsp;去除噪音项，就能求出先验估计值：
+&emsp;&emsp;依据去除噪音的状态方程[@eq:状态方程]，就能直接写出先验估计的表达式：
 
 ::: {custom-style="Figure"}
 $$
@@ -260,13 +307,12 @@ $${#eq:先验误差的协方差矩阵2}
 
 ### 更新模型
 
-&emsp;&emsp;对于这个小车，我们有卫星测量，卫星只能测量小车的位置$z_t$，测量值$z_t$和实际值$p_t$之间存在观测噪音$\Delta p_t$。卫星无法测量速度，所以观测方程为：
+&emsp;&emsp;对于这个小车，我们有卫星测量，卫星只能测量小车的位置$z_t$，卫星无法测量速度，所以理想的观测方程为：
 
 ::: {custom-style="Figure"}
 $$
 \begin{aligned}
-    z_p &= p_t + \Delta p_t \\ 
-    z_v &= 0
+    z_p &= p_t
 \end{aligned}
 $${#eq:位置和速度观测方程}
 :::
@@ -276,35 +322,86 @@ $${#eq:位置和速度观测方程}
 ::: {custom-style="Figure"}
 $$
 \begin{equation}
-\begin{bmatrix}
-    z_p \\
-    z_v
-\end{bmatrix}
-=\begin{bmatrix}
-    1 & 0
-\end{bmatrix}
-\cdot\begin{bmatrix}
-    p_t \\
-    v_t
-\end{bmatrix}
-+\begin{bmatrix}
-    1 & 0
-\end{bmatrix}\cdot
-\begin{bmatrix}
-    \Delta p_t \\
-    \Delta v_t
-\end{bmatrix}
+    \begin{bmatrix}
+        z_p
+    \end{bmatrix}
+    = \begin{bmatrix}
+        1 & 0
+    \end{bmatrix}
+    \cdot\begin{bmatrix}
+        p_t \\
+        v_t
+    \end{bmatrix}
 \end{equation}
 $${#eq:位置和速度观测方程的矩阵形式}
 :::
 
-其中引入了速度观测噪音$v_t$，但是速度是没有测量的，可以去掉这个测量量。同样的有其他传感器的话可以增加测量量。所以观测方程的维度可以和状态方程的维度不同。可以看到该[@eq:位置和速度观测方程的矩阵形式]，满足观测方程[@eq:观测方程]。
+一定不能写成下面的形式，因为 $z_v$ 没有被观测，而不是 $z_v = 0$！
+
+::: {custom-style="Figure"}
+$$
+\begin{aligned}
+    z_p &= p_t \\ 
+    z_v &= 0
+\end{aligned}
+$${#eq:错误的位置和速度观测方程}
+:::
+
+错误的矩阵的形式：
+
+::: {custom-style="Figure"}
+$$
+\begin{equation}
+    \begin{bmatrix}
+        z_p \\
+        z_v
+    \end{bmatrix}
+    = \begin{bmatrix}
+        1 & 0 \\
+        0 & 0
+    \end{bmatrix}
+    \cdot\begin{bmatrix}
+        p_t \\
+        v_t
+    \end{bmatrix}
+\end{equation}
+$${#eq:错误的位置和速度观测方程的矩阵形式}
+:::
+
+其中引入了速度观测噪音$v_t$，但是速度是没有测量的，可以去掉这个测量量。同样的有其他传感器的话可以增加测量量。所以观测方程的维度可以和状态方程的维度不同。写成矩阵形式：
+
+::: {custom-style="Figure"}
+$$
+\begin{equation}
+    \underline{z_t} = H \cdot \underline{x_t}
+\end{equation}
+$${#eq:理想的观测方程}
+:::
+
+其中下划线 $\underline{x}$ 表示没用噪音的理论值，上式加上以下噪音：
+
+::: {custom-style="Figure"}
+$$
+\begin{equation}
+    \begin{bmatrix}
+        1 & 0 \\
+        0 & 0
+    \end{bmatrix}\cdot
+    \begin{bmatrix}
+        \Delta p_t \\
+        \Delta v_t
+    \end{bmatrix}
+\end{equation}
+$${#eq:位置和速度观测方程的矩阵形式}
+:::
+
+其中，测量值$z_t$和实际值$p_t$之间存在位置观测噪音$\Delta p_t$，速度观测噪音$\Delta v_t$。可以看到该[@eq:位置和速度观测方程的矩阵形式]加上噪音后，满足观测方程[@eq:观测方程]。
 
 ### 更新方程
 
 #### 修正估计
 
-&emsp;&emsp;先验估计值是理想状态下，没有噪音，是根据物理理论规律推导出来的当前时刻的预测的状态值$\hat{x}_t^-$。如果我们把状态方程也去除噪音值，当作一个理想的公式，并把这个先验估计值$\hat{x}_t^-$带入去除噪音的观测方程中，那么实际的观测值和理论上理想的观测值之间存在一个差值，这个值就叫`测量残差`，也叫`残差`，记为$l_t$。
+&emsp;&emsp;先验估计值是理想状态下，没有噪音，是根据物理理论规律推导出来的当前时刻的预测的状态值$\hat{x}_t^-$。如果我们把观测方程也去除噪音值，当作一个理想的公式，并把这个先验估计值$\hat{x}_t^-$带入去除噪音的观测方程中，那么实际的观测值和理论上理想的观测值之间存在一个差值，这个值就叫`测量残差`，也叫`残差`，记为$l_t$：
 
 ::: {custom-style="Figure"}
 $$
@@ -513,7 +610,7 @@ $$
 \begin{equation}
 \begin{aligned}
     K_t &= \frac {P_t^- \cdot H^T} {H \cdot P_t^- \cdot H^T + R} \\
-    \hat{x}_t &= \hat{x}_t^- + K_t \cdot (z_t-H \cdot \hat{x}_t^-) \\
+    \hat{x}_t &= \hat{x}_t^- + K_t \cdot (z_t - H \cdot \hat{x}_t^-) \\
     P_{t} &= (I - K_t \cdot H) \cdot P_{t}^{-}
 \end{aligned}
 \end{equation}
@@ -522,7 +619,82 @@ $${#eq:更新}
 
 ### matlab仿真
 
+&emsp;&emsp;所有的代码算法，严格按照公式推导进行设计。所有的代码变量全部取自于latex公式符号。有两点需要额外设计：一是初始值，这是在公式推导中没有提及的。二是遇到了数值分析问题，需要对公式进行移向等基本变化进行改造；但也是要详细列写公式的，并严格依据公式写代码；数值问题是在跑代码时发现的，发现数值问题，再回头改公式。matlab仿真公式如下：
 
+```matlab
+%% 清理
+close all; clear; clc;
+% 估计小车在每一时刻的位置和速度
+
+%% 无噪音的理想值
+T = (1 : 100); % 离散的时间序列，单位是s
+p = zeros(1, length(T)); v = zeros(1, length(T)); 
+p(1) = 0;v(1) = 5; % 小车的初始速度是5m/s，未知真实值
+a = 0.1; % 加速度
+
+for t = 2 : length(T)
+    p(t) = p(t - 1) + v(t - 1) + 1/2 * a; % 理想的位置
+    v(t) = v(t - 1) + a; % 理想的速度值
+end
+
+underline_x = [p; v];
+ 
+%% 有噪音的实际值，模拟噪音
+% 状态噪音
+r_p = 0.01 * randn(1, length(T));
+r_v = 0.01 * randn(1, length(T));
+x = underline_x;
+for t = 2 : length(T)
+    x(1, t) = x(1, t - 1) + x(2, t - 1) + 1/2 * a + r_p(t); % 真实的位置
+    x(2, t) = x(2, t - 1) + a + r_v(t); % 真实的速度值
+end
+
+% 观测噪音
+Delta_p = 3 * randn(1, length(T)); % GPS测量误差，标准差为3m
+z = x(1, :) + Delta_p; % GPS的观测值，带有测量误差
+
+%% 卡尔曼滤波
+% 已知量
+% 已知的线性变换矩阵
+F = [1, 1; 0, 1]; % 状态转移矩阵
+B = [1/2; 1]; % 控制矩阵
+u = a;
+H = [1, 0];
+Q = [0.0001, 0; 0, 0.0001]; % 过程噪声的协方差矩阵，这是一个超参数
+R = 9; % 观测噪声的协方差矩阵，也是一个超参数。因为是一维的，就是一个数
+
+% 初始化
+hat_x_ = zeros(2, length(T)); hat_x = zeros(2, length(T));
+hat_x(:, 1) = [0; 0]; % 初始状态，[位置, 速度]，就是我们要估计的内容
+P = [0.1, 0; 0, 0.1]; % 先验误差协方差矩阵的初始值，根据经验给出
+
+% 卡尔曼滤波5个关键公式
+for t = 2:length(T)
+    hat_x_(:, t) = F * hat_x(:, t - 1) + B * u;
+    P_ = F * P * F' + Q;
+    K = (P_ * H') ./ (H * P_ * H' + R);
+    hat_x(:, t) = hat_x_(:, t) + K * (z(:, t) - H * hat_x_(:, t));
+    P = (eye(2) - K * H) * P_;
+end
+
+%% 绘图
+figure(1);
+plot(T, underline_x(1, :), 'b'); % 位置的理想值
+hold on;
+plot(T, x(1, :), 'g'); % 位置的实际值
+plot(T, z(1, :), 'm'); % 位置的观测值
+plot(T, hat_x(1, :), 'r.'); % 位置的最优估计值
+title('对位置的估计');
+xlabel('时间'); ylabel('位置');
+
+figure(2);
+plot(T, underline_x(2, :)); % 速度的理想值
+hold on;
+plot(T, x(2, :), 'g'); % 速度的实际值
+plot(T, hat_x(2, :), 'r.'); % 速度的最优估计值
+title('对速度的估计');
+xlabel('时间'); ylabel('速度');
+```
 
 ### GNSS定位领域
 
