@@ -79,7 +79,7 @@ $$
 \begin{equation}
     x_{t} = F \cdot x_{t-1} + B \cdot u_{t-1} + w_{t}
 \end{equation}
-$${#eq:状态方程}
+$$ {#eq:状态方程}
 :::
 
 解释：当前时刻的状态$x_{t}$等于上一时刻的状态$x_{t-1}$乘以系数$F$，加上输入值$u_{t}$乘以系数$B$，最后加上`过程噪声`$w_{t}$。
@@ -95,7 +95,7 @@ $$
 \begin{equation}
     z_{t} = H \cdot x_{t} + v_{t}
 \end{equation}
-$${#eq:观测方程}
+$$ {#eq:观测方程}
 :::
 
 $z_{t}$是观测量，$x_{t}$是状态量，$H$是状态量的系数，又称`观测矩阵`因为我们假定观测量和状态量之间的关系是线性的，可以由这个线性矩阵$H$表示。$v_{t}$是`观测噪声`。
@@ -116,7 +116,7 @@ $$
     {{v_{t} \in N(0,R)}}
 \end{aligned}
 \end{equation}
-$${#eq:噪音服从正态分布}
+$$ {#eq:噪音服从正态分布}
 :::
 
 他们的均值均为零，方差分别为$Q$和$R$，方差为常数，与时间无关。$w_{t}$和$v_{t}$就是其中的一个取值，只是取得这个结果的概率服从正态分布：
@@ -141,7 +141,7 @@ $$
         }
 \end{aligned}
 \end{equation}
-$${#eq:噪音服从正态分布的表达式}
+$$ {#eq:噪音服从正态分布的表达式}
 :::
 
 ### 超参数
@@ -153,7 +153,7 @@ $$
 \begin{equation}
     Q,R \sim PID
 \end{equation}
-$${#eq:卡尔曼滤波和PID调参}
+$$ {#eq:卡尔曼滤波和PID调参}
 :::
 
 ### 卡尔曼滤波直观图解
@@ -174,7 +174,7 @@ $$
     &v_t = v_{t-1} + a\cdot\Delta t
 \end{aligned}
 \end{equation}
-$${#eq:匀加速直线运动1}
+$$ {#eq:匀加速直线运动1}
 :::
 
 其中 $t$ 表示当前时刻，$t - 1$ 表示上一时刻。这是高中物理学习的标准的位置和速度公式。写成矩阵形式：
@@ -199,7 +199,7 @@ $$
         \Delta t
     \end{bmatrix} \cdot a
 \end{equation}
-$${#eq:匀加速直线运动2}
+$$ {#eq:匀加速直线运动2}
 :::
 
 写成矩阵的形式为：
@@ -209,7 +209,7 @@ $$
 \begin{equation}
     \underline{x} = F \cdot \underline{x_{t-1}} + B \cdot u_{t-1}
 \end{equation}
-$${#eq:理想的状态方程}
+$$ {#eq:理想的状态方程}
 :::
 
 其中下划线 $\underline{x}$ 表示没用噪音的理论值。上式加上噪音后：
@@ -226,7 +226,7 @@ $$
         r_t(v)
     \end{bmatrix}
 \end{equation}
-$${#eq:过程噪音}
+$$ {#eq:过程噪音}
 :::
 
 满足状态方程[@eq:状态方程]。其中，$r_t(p)$是位置噪音，$r_t(v)$是速度噪音，均服从正太分布，噪音是随机的，与时间有关，每个时刻产生随机的噪音。
@@ -242,7 +242,7 @@ $$
 \begin{equation}
     \hat{x}_{t}^{-} = F \cdot \hat{x}_{t-1} + B \cdot u_{t-1}
 \end{equation} 
-$${#eq:先验估计}
+$$ {#eq:先验估计}
 :::
 
 符号$\hat{x}_{t}^{-}$和$\hat{x}_{t-1}$的含义在前文[卡尔曼滤波直观图解](#卡尔曼滤波直观图解)中已经提到，引入符号 $\hat{}$ 和$^{-}$是为了表示估计和先验。
@@ -256,7 +256,7 @@ $$
 \begin{equation}
     {e}_{t}^{-} = x_{t} - \hat{x}_{t}^{-} = F \cdot (x_{t-1} - \hat{x}_{t-1}) + w_{t}
 \end{equation}
-$${#eq:先验误差}
+$$ {#eq:先验误差}
 :::
 
 先验误差表示真实值和预测值的差值。其中$x_{t} - \hat{x}_{t}$为`后验误差`${e}_t$，即：
@@ -266,7 +266,7 @@ $$
 \begin{equation}
     {e}_t = x_{t} - \hat{x}_{t}
 \end{equation}
-$${#eq:后验误差}
+$$ {#eq:后验误差}
 :::
 
 后验误差表示真实值和估计值的差值。所以上[@eq:先验误差]先验误差可以进一步表示为：
@@ -276,7 +276,7 @@ $$
 \begin{equation}
     {e}_{t}^{-} = F \cdot e_{t-1} + w_{t}
 \end{equation}
-$${#eq:先验误差和后验误差的关系}
+$$ {#eq:先验误差和后验误差的关系}
 :::
 
 &emsp;&emsp;接下来求先验误差的协方差矩阵：
@@ -290,7 +290,7 @@ $$
     &= F \cdot Cov(e_{t-1}) \cdot F^{T} + Cov(w_{t}) \\
 \end{aligned}
 \end{equation}
-$${#eq:先验误差的协方差矩阵1}
+$$ {#eq:先验误差的协方差矩阵1}
 :::
 
 记`先验误差的协方差矩阵`$Cov({e}_{t}^{-}) = P_{t}^{-}$，则上[#eq:先验误差的协方差矩阵1]可以写作：
@@ -300,7 +300,7 @@ $$
 \begin{equation}
     P_{t}^{-} = F \cdot P_{t-1} \cdot F^{T} + Q
 \end{equation}
-$${#eq:先验误差的协方差矩阵2}
+$$ {#eq:先验误差的协方差矩阵2}
 :::
 
 其中$P_{t-1}$是上一时刻的后验误差的协方差矩阵。不同状态之间的噪音很可能不是独立的，他们具有一定的相关性。
@@ -314,7 +314,7 @@ $$
 \begin{aligned}
     z_p &= p_t
 \end{aligned}
-$${#eq:位置和速度观测方程}
+$$ {#eq:位置和速度观测方程}
 :::
 
 写成矩阵的形式：
@@ -333,7 +333,7 @@ $$
         v_t
     \end{bmatrix}
 \end{equation}
-$${#eq:位置和速度观测方程的矩阵形式}
+$$ {#eq:位置和速度观测方程的矩阵形式}
 :::
 
 一定不能写成下面的形式，因为 $z_v$ 没有被观测，而不是 $z_v = 0$！
@@ -344,7 +344,7 @@ $$
     z_p &= p_t \\ 
     z_v &= 0
 \end{aligned}
-$${#eq:错误的位置和速度观测方程}
+$$ {#eq:错误的位置和速度观测方程}
 :::
 
 错误的矩阵的形式：
@@ -365,7 +365,7 @@ $$
         v_t
     \end{bmatrix}
 \end{equation}
-$${#eq:错误的位置和速度观测方程的矩阵形式}
+$$ {#eq:错误的位置和速度观测方程的矩阵形式}
 :::
 
 其中引入了速度观测噪音$v_t$，但是速度是没有测量的，可以去掉这个测量量。同样的有其他传感器的话可以增加测量量。所以观测方程的维度可以和状态方程的维度不同。写成矩阵形式：
@@ -375,7 +375,7 @@ $$
 \begin{equation}
     \underline{z_t} = H \cdot \underline{x_t}
 \end{equation}
-$${#eq:理想的观测方程}
+$$ {#eq:理想的观测方程}
 :::
 
 其中下划线 $\underline{x}$ 表示没用噪音的理论值，上式加上以下噪音：
@@ -391,7 +391,7 @@ $$
         \Delta v_t
     \end{bmatrix}
 \end{equation}
-$${#eq:观测噪音}
+$$ {#eq:观测噪音}
 :::
 
 其中，测量值$z_t$和实际值$p_t$之间存在位置观测噪音$\Delta p_t$，速度观测噪音$\Delta v_t$。可以看到该[@eq:位置和速度观测方程的矩阵形式]加上噪音后，满足观测方程[@eq:观测方程]。
@@ -407,7 +407,7 @@ $$
 \begin{equation}
     l_t = z_t - H \cdot \hat{x}_t^-
 \end{equation}
-$${#eq:残差}
+$$ {#eq:残差}
 :::
 
 &emsp;&emsp;我们永远无法得到状态的真实值$x_t$，只能尽量得到一个最优的估计值$\hat{x}_t$，但是这个值无法直接用先验估计值$\hat{x}_t^-$和残差直接表示，因为残差是理想状态计算的观测值和实际的观测值之间的差值，但是这个值并不能直接表示后验估计值$\hat{x}_t$和先验估计值$\hat{x}_t^-$之间的差值，但是可以用一个系数$K_t$使他们相等：
@@ -417,7 +417,7 @@ $$
 \begin{equation}
     \hat{x}_t - \hat{x}_t^- = K_t \cdot (z_t - H \cdot \hat{x}_t^-)
 \end{equation}
-$${#eq:最优估计偏差和残差的关系}
+$$ {#eq:最优估计偏差和残差的关系}
 :::
 
 其中$K_t$又称为`卡尔曼滤波系数`，上[@eq:最优估计偏差和残差的关系]我们习惯写成：
@@ -427,7 +427,7 @@ $$
 \begin{equation}
     \hat{x}_t = \hat{x}_t^- + K_t \cdot (z_t-H \cdot \hat{x}_t^-)
 \end{equation}
-$${#eq:最优估计值计算公式}
+$$ {#eq:最优估计值计算公式}
 :::
 
 这样，最优估计值$\hat{x}_t$等于当前时刻的预测值$\hat{x}_t^-$，加上权重$K_t$乘以观测误差$z_t-H \cdot \hat{x}_t^-$。
@@ -445,7 +445,7 @@ $$
     {e}_t = x_{t} - [\hat{x}_t^- + K_t \cdot (z_t - H \cdot \hat{x}_t^-)]
 \end{aligned}
 \end{equation}
-$${#eq:后验误差变换1}
+$$ {#eq:后验误差变换1}
 :::
 
 继续化简，将观测方程[@eq:观测方程]带入上[@eq:后验误差变换1]中：
@@ -458,7 +458,7 @@ $$
     &= (x_{t} - \hat{x}_t^-) - K_t \cdot H \cdot (x_{t} - \hat{x}_t^-) - K_t \cdot v_{t}
 \end{aligned}
 \end{equation}
-$${#eq:后验误差变换2}
+$$ {#eq:后验误差变换2}
 :::
 
 继续化简，将上[@eq:先验误差]的先验误差${e}_{t}^{-}$带入上[@eq:后验误差变换2]中：
@@ -472,7 +472,7 @@ $$
     &= (I - K_t \cdot H) \cdot {e}_{t}^{-} - K_t \cdot v_{t}
 \end{aligned}
 \end{equation}
-$${#eq:后验误差变换3}
+$$ {#eq:后验误差变换3}
 :::
 
 &emsp;&emsp;接下来求后验误差的协方差矩阵：
@@ -486,7 +486,7 @@ $$
     &= (I - K_t \cdot H) \cdot Cov({e}_{t}^{-}) \cdot (I - K_t \cdot H)^T +  K_t \cdot Cov(v_{t}) \cdot K_t^T
 \end{aligned}
 \end{equation}
-$${#eq:后验误差的协方差矩阵1}
+$$ {#eq:后验误差的协方差矩阵1}
 :::
 
 记`后验误差的协方差矩阵`$Cov({e}_{t}) = P_{t}$，则上[#eq:后验误差的协方差矩阵1]可以写作：
@@ -513,7 +513,7 @@ $$
         + K_t \cdot (H \cdot P_{t}^{-} \cdot H^T + R) \cdot K_t^T
 \end{aligned}
 \end{equation}
-$${#eq:后验误差的协方差矩阵2}
+$$ {#eq:后验误差的协方差矩阵2}
 :::
 
 其中之所以能化简，是由于误差的协方差矩阵$P_{t}$和$P_{t}^-$均是自相关矩阵，即以对角线为分界线，矩阵是对称的，这是协方差矩阵的性质。我们想要后验误差的协方差矩阵$P_{t}$最小，只要让该矩阵对角线上的和最小就行了，即矩阵$P_{t}$的迹最小。为什么呢？因为对角线上是每个误差本身的协方差，也就是方差，他们的和最小，协方差矩阵$P_{t}$就最小；矩阵的其他位置是两两误差的相关性，与整体误差无关，对整体误差大小没有影响。因此：
@@ -522,12 +522,15 @@ $${#eq:后验误差的协方差矩阵2}
 $$
 \begin{equation}
 \begin{aligned}
-    T(P_{t}) = T(P_{t}^{-}) 
+    T(P_{t}) &= T(P_{t}^{-}) 
         - 2 \cdot T(K_t \cdot H \cdot P_{t}^{-})
-        + T[K_t \cdot (H \cdot P_{t}^{-} \cdot H^T + R) \cdot K_t^T]
+        + T[K_t \cdot (H \cdot P_{t}^{-} \cdot H^T + R) \cdot K_t^T] \\
+    &= T[K_t \cdot (H \cdot P_{t}^{-} \cdot H^T + R) \cdot K_t^T] 
+        - 2 \cdot T(K_t \cdot H \cdot P_{t}^{-})
+        + T(P_{t}^{-}) \\   
 \end{aligned}
 \end{equation}
-$${#eq:后验误差的协方差矩阵的迹}
+$$ {#eq:后验误差的协方差矩阵的迹}
 :::
 
 其中$T()$代表矩阵的迹。把上[@eq:后验误差的协方差矩阵的迹]看作是关于$K_t$的函数：
@@ -536,11 +539,12 @@ $${#eq:后验误差的协方差矩阵的迹}
 $$
 \begin{equation}
 \begin{aligned}
-    f(x) = a \cdot x^2 - 2 \cdot b \cdot x + c,
-    \quad(a,b\text{是正的常数})
+    f(x) &= a \cdot x^2 - b \cdot x + c,
+    \quad(a,b\text{是正的常数}) \\
+    f'(x) &= 2 \cdot a \cdot x - b
 \end{aligned}
 \end{equation}
-$${#eq:关于卡尔曼滤波系数的函数}
+$$ {#eq:关于卡尔曼滤波系数的函数}
 :::
 
 显然，这个函数是一个开口向上的一元二次函数，有极小值。它是一个凸函数，导数为0的点就是最小值。上[@eq:后验误差的协方差矩阵的迹]求导为：
@@ -550,14 +554,14 @@ $$
 \begin{equation}
 \begin{aligned}
     {\frac {dT(P_{t})} {dK_{t}}}
-    &= -2 \cdot (H \cdot P_{t}^{-})^{T} 
+    &= K_{t} \cdot (H \cdot P_{t}^{-} \cdot H^{T} + R)
         + K_{t} \cdot (H \cdot P_{t}^{-} \cdot H^{T} + R)
-        + K_{t} \cdot (H \cdot P_{t}^{-} \cdot H^{T} + R) \\
-    &= -2 \cdot (H \cdot P_{t}^{-})^{T} 
-        + 2 \cdot K_{t} \cdot (H \cdot P_{t}^{-} \cdot H^{T} + R)
+        -2 \cdot (H \cdot P_{t}^{-})^{T} \\
+    &= 2 \cdot K_{t} \cdot (H \cdot P_{t}^{-} \cdot H^{T} + R)
+        -2 \cdot (H \cdot P_{t}^{-})^{T}
 \end{aligned}
 \end{equation}
-$${#eq:后验误差的协方差矩阵的迹的转置}
+$$ {#eq:后验误差的协方差矩阵的迹的转置}
 :::
 
 这里是对矩阵的迹的求导，求导公式从函数求导理解，想弄清楚，那么具体矩阵迹的求导需要单独学习。使得上式为零，则可计算出卡尔曼滤波系数$K_{t}$：
@@ -567,7 +571,7 @@ $$
 \begin{equation}
     K_t = \frac {P_t^- \cdot H^T} {H \cdot P_t^- \cdot H^T + R}
 \end{equation}
-$${#eq:卡尔曼滤波系数}
+$$ {#eq:卡尔曼滤波系数}
 :::
 
 #### 更新后验误差的协方差
@@ -582,7 +586,7 @@ $$
         &= (I - K_t \cdot H) \cdot P_{t}^{-} \\
 \end{aligned}
 \end{equation}
-$${#eq:后验误差的协方差矩阵3}
+$$ {#eq:后验误差的协方差矩阵3}
 :::
 
 ## 总结
@@ -599,7 +603,7 @@ $$
     P_{t}^{-} &= F \cdot P_{t-1} \cdot F^{T} + Q 
 \end{aligned}
 \end{equation}
-$${#eq:预测}
+$$ {#eq:预测}
 :::
 
 更新公式：
@@ -613,7 +617,7 @@ $$
     P_{t} &= (I - K_t \cdot H) \cdot P_{t}^{-}
 \end{aligned}
 \end{equation}
-$${#eq:更新}
+$$ {#eq:更新}
 :::
 
 ### matlab仿真
@@ -677,7 +681,7 @@ P = [0.1, 0; 0, 0.1]; % 先验误差协方差矩阵的初始值，根据经验�
 for t = 2:length(T)
     hat_x_(:, t) = F * hat_x(:, t - 1) + B * u;
     P_ = F * P * F' + Q;
-    K = (P_ * H') ./ (H * P_ * H' + R);
+    K = (P_ * H') / (H * P_ * H' + R);
     hat_x(:, t) = hat_x_(:, t) + K * (z(:, t) - H * hat_x_(:, t));
     P = (eye(2) - K * H) * P_;
 end
@@ -707,7 +711,18 @@ xlabel('时间'); ylabel('速度');
 
 #### 时间复杂度
 
-&emsp;&emsp;需要考虑matlab仿真的时间复杂度。就是考虑算力问题。
+&emsp;&emsp;需要考虑matlab仿真的时间复杂度。就是考虑算力问题。时间复杂度想得到的答案是随着数据规模的增加，程序的运行次数是线性增加还是指数增加的。从这里我们不难看出，数据规模有三个量，一个是状态量的维度 $m$，一个是观测量的维度 $n$，一个是数组的长度 $t$。显然循环停止的条件是数组跑完，所以时间复杂度肯定包含 $\cdot t$ 项。接下来就只用考虑单步预测的时间复杂度：显然不管计算了多少次，复杂度只和维度有关，所以：
+
+$$
+\begin{equation}
+\begin{aligned}
+    T &= O(m + n \cdot t) \\
+    T &= O(n^2)
+\end{aligned}
+\end{equation}
+$$ {#eq:时间复杂度}
+
+这是对的吗？应该是对的吧？
 
 ### GNSS定位领域
 
@@ -724,7 +739,7 @@ $$
 \end{aligned}
 \right.
 \end{equation}
-$${#eq:状态空间表达式}
+$$ {#eq:状态空间表达式}
 
 上式和状态方程[@eq:状态方程]的以及观测方程[@eq:观测方程]还有三个区别：
 
@@ -745,7 +760,7 @@ $$
 \end{aligned}
 \right.
 \end{equation}
-$${#eq:时间更新}
+$$ {#eq:时间更新}
 :::
 
 上式与上[@eq:预测]预测方程除了符号以外完全相同，但是确实不够优雅，可读性也不如[@eq:预测]，比如先验误差符号有点怪怪的。之前叫预测，但是这里叫一步预测公式的时间更新，因为从公式上来说，是从上一个时刻推导到这时刻。但是预测的叫法和时间更新的叫法值得是一个东西。
@@ -760,7 +775,7 @@ $$
     D_{X_{k,k}} &= (I - J_k \cdot B_k) \cdot D_{X_{k,k-1}}
 \end{aligned}
 \end{equation}
-$${#eq:测量更新1}
+$$ {#eq:测量更新1}
 :::
 
 其中：
@@ -773,7 +788,7 @@ $$
     l_k &= L_k - Z_k - B_k \cdot \widehat{X}_{k,k-1}
 \end{aligned}
 \end{equation}
-$${#eq:测量更新2}
+$$ {#eq:测量更新2}
 :::
 
 其中：
@@ -783,7 +798,7 @@ $$
 \begin{equation}
     Z_{k} = G_{k} \cdot U_{k}
 \end{equation}
-$${#eq:飞随机控制向量}
+$$ {#eq:飞随机控制向量}
 :::
 
 上式和[@eq:更新]更新方程除了符号以及状态方程那儿说的不同之处以外没有任何不同。这里$J_k$除了之前叫卡尔曼滤波系数，这里还叫滤波增益矩阵。$l_k$除了叫验前残差以外还叫`新息矩阵`、`OMC向量`。
