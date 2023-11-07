@@ -21,6 +21,7 @@
 | deduce | [dɪˈdjuːs] | 推断 |
 | schedule | /ˈʃedjuːl/ <br> /ˈskedʒuːl/ | 日程表 |
 | route | /ruːt/ | 路线 |
+| request | /rɪˈkwest/ | 要求 |
 
   : Caption {#tbl:翻译}
 
