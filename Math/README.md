@@ -8,8 +8,9 @@
 4. [卡尔曼滤波](./KalmanFilter/)。
 5. [矩阵的迹](./MatrixTrace/)。
 6. [矩阵的转置](./MatrixTransposition/)。
-7. [方差](./variance/)。
-8. []()：。
+7. [动量](./Momentum/)。
+8. [方差](./variance/)。
+9. []()：。
 
 ## 说明
 
