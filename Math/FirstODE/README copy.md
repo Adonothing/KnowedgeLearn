@@ -57,6 +57,20 @@ reference-section-title: "参考文献"
 
 # 一阶微分方程
 
+## 一阶齐次微分方程
+
+&emsp;&emsp;设一个关于x的函数y，有以下表达式：
+
+::: {custom-style="Figure"}
+$$
+\begin{equation} \begin{aligned}
+    y' + p(x) \cdot y = 0
+\end{aligned} \end{equation}
+$$ {#eq:一阶齐次微分方程}
+:::
+
+上式称一阶齐次微分方程
+
 ## 一阶微分方程的解
 
 &emsp;&emsp;很多生活实际上、工程上的问题数学表达式就是一阶微分方程。一阶微分方程是可以直接求解的。连续性状态方程就是一阶微分方程，一阶微分方程的求解是状态方程离散化的一个重要步骤。所以单开一阶微分方程来讨论。一阶微分方程的表达式为：
